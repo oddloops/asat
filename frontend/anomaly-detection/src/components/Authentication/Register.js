@@ -1,8 +1,9 @@
 // Register Page
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { auth } from "./firebase"
-import {createUserWithEmailAndPassword, sendEmailVerification} from 'firebase/auth'
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword, sendEmailVerification} from 'firebase/auth';
+import { useAuthValue } from "../../AuthContext";
 import "./authentication.css";
 
 function Register() {
@@ -11,7 +12,9 @@ function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const { setTimeActive } = useAuthValue()
     const navigate = useNavigate();
+
 
     // Validate password function
     const validatePassword = () => {
@@ -34,6 +37,7 @@ function Register() {
             .then(() => {
                 sendEmailVerification(auth.currentUser)
                 .then(() => {
+                    setTimeActive(true)
                     navigate('/verify-email')
                 }).catch((err) => alert(err.message))
             })
@@ -74,8 +78,7 @@ function Register() {
                 <button type='submit'>Register</button>
                 </form>
                 <span>
-                Already have an account?  
-                <Link to='/login'>login</Link>
+                Already have an account? <Link to='/login'>Login</Link>
                 </span>
             </div>
         </div>
