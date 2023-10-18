@@ -1,16 +1,18 @@
 // Login Page
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { auth } from "./firebase"
-import {signInWithEmailAndPassword, sendEmailVerification} from 'firebase/auth'
-import "./authentication.css"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { auth } from "../../firebase";
+import {signInWithEmailAndPassword, sendEmailVerification} from 'firebase/auth';
+import { useAuthValue } from "../../AuthContext";
+import "./authentication.css";
 
 function Login() {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const { setTimeActive } = useAuthValue()
+    const navigate = useNavigate()
 
     const login = e => {
         e.preventDefault()
@@ -19,7 +21,8 @@ function Login() {
             if (!auth.currentUser.emailVerified) {
                 sendEmailVerification(auth.currentUser)
                 .then(() => {
-                    navigate("/verify-email")
+                    setTimeActive(true)
+                    navigate('/verify-email')
                 })
                 .catch(err => alert(err.message))
             } else {
@@ -52,8 +55,7 @@ function Login() {
                 <button type='submit'>Login</button>
                 </form>
                 <p>
-                Don't have and account? 
-                <Link to='/register'>Create one here</Link>
+                Don't have an account? <Link to='/register'>Create account</Link>
                 </p>
             </div>
         </div>
