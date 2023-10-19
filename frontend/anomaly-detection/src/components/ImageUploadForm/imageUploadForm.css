@@ -1,0 +1,12 @@
+/* Style for the horizontal bar of images */
+.image-preview-bar {
+  display: flex;
+  flex-direction: row; /* Ensure images are displayed side by side */
+  overflow-x: auto;
+}
+
+/* Style to temporarily resize images for better visibility */
+.temp-resize {
+  max-width: 100px; /* Adjust the size as needed */
+  max-height: 100px;
+}
