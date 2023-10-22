@@ -1,3 +1,32 @@
+/* Upload box */
+.upload-box {
+  width: 500px; /* Set the desired fixed width */
+  max-width: 500px; /* Set the maximum width to maintain responsiveness */
+  height: 400px; /* Set the fixed height */
+  max-height: 400px; /* Set the maximum height to maintain responsiveness */
+  margin: 0 auto; 
+  border: 2px dashed #ddd; /* Dotted border with 2px width and light gray color */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px;
+  text-align: center; 
+  background-color: #f9f9f9; /* Light background color */
+  overflow: auto; /* Add scrollbars if content overflows */
+}
+
+/* Choose file and Submit buttons */
+.upload-box .upload-button,
+.upload-box button {
+  display: block; /* Change from inline to block to make them stack vertically */
+  margin: 10px auto; /* Add margin for spacing and centering */
+  opacity: 0.7; /* Adjust the opacity as needed */
+  transition: opacity 0.3s ease; /* Add a smooth transition effect */
+}
+
+.upload-box .upload-button:hover,
+.upload-box button:hover {
+  opacity: 1;
+}
+
 /* Style for the horizontal bar of images */
 .image-preview-bar {
   display: flex;
