@@ -10,6 +10,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { AuthProvider } from './AuthContext';
 import ImageUploadForm from './components/ImageUploadForm/ImageUploadForm';
+import ImageDropzone from './components/ImageUploadForm/ImageDropzone';
 
 function App() {
 
@@ -23,7 +24,10 @@ function App() {
   }, [])
 
   return (
-    ImageUploadForm()
+    <>
+      <h1>AAsat</h1>
+      {ImageDropzone()}
+    </>
   )
   // return (
   //   <Router>
