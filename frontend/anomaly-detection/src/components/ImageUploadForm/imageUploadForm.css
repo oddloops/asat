@@ -1,3 +1,18 @@
+*{
+  box-sizing: border-box;
+}
+
+span{
+  display: block;
+}
+
+.center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .container {
   width: 1200px;
   max-width: 90%;
@@ -32,7 +47,7 @@
 }
 
 .images > img {
-  height: 20rem;
+  height: 100%;
   width: 100%;
   object-fit: cover;
 }
@@ -54,3 +69,4 @@
   color: #333;
   cursor: pointer;
 }
+
