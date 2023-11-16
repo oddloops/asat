@@ -2,23 +2,34 @@
 import { useDropzone } from "react-dropzone";
 import "./imageUploadForm.css";
 
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState } from "react";
 
 export default function ImageDropzone() {
-    const [selectedImages, setSelectedImages] = useState([]);
-    const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-        acceptedFiles.forEach((file) => {
-            setSelectedImages((prevState) => [...prevState, file]);
-        });
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const onDrop = useCallback((acceptedFile, rejectedFile) => {
+        if (acceptedFile.length === 1) {
+            setSelectedImage(acceptedFile[0]);
+        } else {
+            console.warn("Please select only one image.");
+        }
     }, [])
-    
-    const  {
+
+    const clearImage = () => {
+        setSelectedImage(null);
+    };
+
+    const {
         getRootProps,
         getInputProps,
         isDragActive,
         isDragAccept,
         isDragReject,
-    } = useDropzone({ onDrop, accept: "image/png" });
+    } = useDropzone({ 
+            onDrop, 
+            accept: "image/*", 
+            multiple: false,
+        });
 
     return (
         <div className="container">
@@ -27,14 +38,15 @@ export default function ImageDropzone() {
                 {isDragActive ? (
                     <p>Drop image(s) here ...</p>
                 ) : (
-                    <p>Drag and drop image(s) here, or click to select images</p>
+                    <p>Drag and drop an image here, or click to select an image</p>
                 )}
             </div>
             <div className="images">
-                {selectedImages.length > 0 && selectedImages.map((image, index) => (
-                    <img src={`${URL.createObjectURL(image)}`} key={index} alt="" />
-                ))}
+                {selectedImage && (
+                    <img src={URL.createObjectURL(selectedImage)} alt="Uploaded" />
+                )}
             </div>
+            <button onClick={clearImage}>Clear</button>
         </div>
     );
 }
