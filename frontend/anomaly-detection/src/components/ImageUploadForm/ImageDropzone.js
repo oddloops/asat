@@ -33,7 +33,7 @@ export default function ImageDropzone() {
         isDragReject,
     } = useDropzone({ 
             onDrop, 
-            accept: "image/*", 
+            accept: "image/jpeg ,image/png", 
             multiple: false,
         });
 
