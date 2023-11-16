@@ -5,9 +5,11 @@ import "./imageUploadForm.css";
 import { useCallback, useState } from "react";
 import ImagePreview from "./ImagePreview";
 import ImageButtons from "./ImageButtons";
+import { useNavigate } from "react-router-dom";
 
 export default function ImageDropzone() {
     const [selectedImage, setSelectedImage] = useState(null);
+    const navigate = useNavigate();
 
     const onDrop = useCallback((acceptedFile, rejectedFile) => {
         if (acceptedFile.length === 1) {
@@ -18,7 +20,12 @@ export default function ImageDropzone() {
     }, [])
 
     const uploadImage = () => {
-        console.log("UPLOADED");
+        if (selectedImage) {
+            console.log("Uploaded");
+            navigate("/ex-color");
+        } else {
+            console.warn("No image selected to upload.");
+        }
     }
 
     const clearImage = () => {
