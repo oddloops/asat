@@ -3,6 +3,8 @@ import { useDropzone } from "react-dropzone";
 import "./imageUploadForm.css";
 
 import { useCallback, useState } from "react";
+import ImagePreview from "./ImagePreview";
+import ImageButtons from "./ImageButtons";
 
 export default function ImageDropzone() {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -14,6 +16,10 @@ export default function ImageDropzone() {
             console.warn("Please select only one image.");
         }
     }, [])
+
+    const uploadImage = () => {
+        console.log("UPLOADED");
+    }
 
     const clearImage = () => {
         setSelectedImage(null);
@@ -41,12 +47,8 @@ export default function ImageDropzone() {
                     <p>Drag and drop an image here, or click to select an image</p>
                 )}
             </div>
-            <div className="images">
-                {selectedImage && (
-                    <img src={URL.createObjectURL(selectedImage)} alt="Uploaded" />
-                )}
-            </div>
-            <button onClick={clearImage}>Clear</button>
+            <ImagePreview selectedImage={selectedImage} />
+            <ImageButtons handleUpload={uploadImage} clearUpload={clearImage}/>
         </div>
     );
 }
