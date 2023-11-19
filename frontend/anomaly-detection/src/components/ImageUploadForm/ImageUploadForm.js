@@ -1,107 +1,68 @@
-// Image Upload Form to allow for uploading of satellite images
-import React, { useState, useEffect, useRef } from "react";
-import "./imageUploadForm.css";
+import { useDropzone } from "react-dropzone";
+import { useCallback, useState } from "react";
+import ImagePreview from "./ImagePreview";
+import ImageButtons from "./ImageButtons";
+import { useNavigate } from "react-router-dom";
 
-function ImageUploadForm() {
-  const [imageFiles, setImageFiles] = useState([]);
-  const [imageURLs, setImageURLs] = useState([]);
-  const fileInputRef = useRef(null);
+export default function ImageDropzone() {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (imageFiles && imageFiles.length < 1) {
-      return;
+  const onDrop = useCallback((acceptedFile, rejectedFile) => {
+    if (acceptedFile.length === 1) {
+      setSelectedImage(acceptedFile[0]);
+    } else {
+      console.warn("Please select only one image.");
     }
-    const newImageUrls = [];
-    imageFiles.forEach((image) => newImageUrls.push(URL.createObjectURL(image)));
-    setImageURLs(newImageUrls);
+  }, []);
 
-    // Clean up previous object URLs when component unmounts
-    return () => {
-      newImageUrls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [imageFiles]);
+  const uploadImage = async () => {
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append("image", selectedImage);
 
-  // Event handler for image upload
-  function handleChange(e) {
-    const files = e.target.files;
-    setImageFiles((prevFiles) => [...prevFiles, ...files]);
-  }
+      try {
+        const response = await fetch("http://localhost:8000/color_app/api/colors/", {
+          method: "POST",
+          body: formData,
+        });
 
-  // Event handler to remove uploaded images
-  function handleImageRemoval(index) {
-    const updatedFiles = [...imageFiles];
-    updatedFiles.splice(index, 1);
-    setImageFiles((prevFiles) => updatedFiles);
-
-    const updatedURLs = [...imageURLs];
-    updatedURLs.splice(index, 1);
-    setImageURLs(updatedURLs);
-  }
-
-  // Event handler for click removal
-  function handleImageRemovalClick(index) {
-    handleImageRemoval(index);
-  }
-
-  // Event handler for submitting image files
-  function handleSubmit() {
-    const formData = new FormData();
-    imageFiles.forEach((image) => {
-      formData.append("files", image);
-    });
-
-    try {
-      console.log("Uploaded");
-    } catch (error) {
-      console.error("Whoops");
+        if (response.ok) {
+          console.log("Image uploaded successfully");
+          navigate("/ex-color");
+        } else {
+          console.error("Error uploading image");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    } else {
+      console.warn("No image selected to upload.");
     }
-  }
+  };
 
-  // Event handler for triggering file input click
-  function handleButtonClick() {
-    fileInputRef.current.click();
-  }
+  const clearImage = () => {
+    setSelectedImage(null);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: "image/jpeg,image/png",
+    multiple: false,
+  });
 
   return (
-    <div className="center">
-      <div className="upload-box">
-        <h2>Upload an image</h2>
-
-        {/* Button to trigger file input */}
-        <button className="upload-button" onClick={handleButtonClick}>
-          Choose File
-        </button>
-
-        {/* Hidden file input */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleChange}
-          multiple
-          ref={fileInputRef}
-          style={{ display: "none" }}
-        />
-
-        <button onClick={handleSubmit} disabled={imageFiles.length === 0}>
-          Submit
-        </button>
-
-        {/* Uploaded Image Preview */}
-        <h3>Preview</h3>
-        <div className="image-preview-bar">
-          {imageURLs.map((imageSrc, index) => (
-            <div
-              key={index}
-              className="image-preview-container"
-              onClick={() => handleImageRemovalClick(index)}
-            >
-              <img src={imageSrc} alt="" className="temp-resize" />
-            </div>
-          ))}
-        </div>
+    <div className="container">
+      <div className="dropzone" {...getRootProps()}>
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <p>Drop image(s) here ...</p>
+        ) : (
+          <p>Drag and drop an image here, or click to select an image</p>
+        )}
       </div>
+      <ImagePreview selectedImage={selectedImage} />
+      <ImageButtons handleUpload={uploadImage} clearUpload={clearImage} />
     </div>
-  )
+  );
 }
-
-export default ImageUploadForm;
